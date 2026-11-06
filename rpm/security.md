@@ -60,3 +60,29 @@ bugs. OSV's tag lists omitted v3.13.9 for every one of them; checking
 the tag in git showed one bug (CVE-2025-8194) was already fixed, and the
 rest resolve to one action: bundle 3.13.18 or later, except
 CVE-2025-15367, which upstream fixed only on main.
+
+## Bug State for Multi-Release Trackers
+
+CVE trackers often cover several releases at once (`[fedora-all]`,
+`[epel-all]`) while the fix lands in only some of them, typically
+rawhide first. The Fedora Operations docs define each Bugzilla status
+and resolution (`bz_status.adoc` and `bz_resolution.adoc`, included in
+the maintainer docs' Bug Status Workflow) but do not address trackers
+that span releases. The following is a reading of those definitions,
+not a rule the docs state:
+
+- Keep a partly fixed tracker open as ASSIGNED, ON_DEV or POST.
+  MODIFIED ("a fix has been built in an update") reads as the bug being
+  fixed, and closing as RAWHIDE or ERRATA is premature while a stable
+  release still ships the flaw
+- Record the partial fix: Fixed In Version for the fixed builds, and a
+  comment saying which releases are done and which remain
+- Bodhi moves a bug that an update is marked as fixing through
+  MODIFIED, ON_QA and CLOSED ERRATA (Package Update Guide). So don't
+  mark an update that fixes only some releases (e.g. rawhide only) as
+  fixing a multi-release tracker, or Bodhi closes it while other
+  releases are still affected. Mark only the update that covers the
+  last affected releases, and let Bodhi move the bug when it lands
+- If the remaining releases will deliberately not get the fix, close as
+  NEXTRELEASE ("will only be fixed for later releases, not on the
+  release reported") or RAWHIDE, and say why in the closing comment
